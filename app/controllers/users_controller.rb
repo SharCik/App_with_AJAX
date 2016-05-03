@@ -3,8 +3,20 @@ class UsersController < ApplicationController
 
   # GET /users
   # GET /users.json
+
   def index
-    @users = User.all
+    # if the id params is present
+    if params[:id]
+      # get all records with id less than 'our last id'
+      # and limit the results to 5
+      @users = User.where('id > ?', params[:id]).limit(5) 
+    else
+      @users = User.limit(5)
+    end
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # GET /users/1
@@ -19,6 +31,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+
   end
 
   # POST /users
@@ -69,6 +82,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.fetch(:user, {})
+      params.require(:user).permit(:name, :location)
     end
 end
